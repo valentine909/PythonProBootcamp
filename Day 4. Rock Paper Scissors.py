@@ -1,15 +1,12 @@
 from day4source import *
-GAME_DICT = {0: rock,
-             1: paper,
-             2: scissors,
-             }
+GAME_IMAGES = [rock, paper, scissors]
 
 
 def player_choice() -> int:
-    choice = int(input("What do you choose? Type 0 for Rock, 1 for Paper or 2 for Scissors: "))
+    choice = int(input("What do you choose? Type 0 for Rock, 1 for Paper or 2 for Scissors:\n"))
     try:
-        print(f"You chose:\n{GAME_DICT[choice]}")
-    except KeyError:
+        print(f"You chose:\n{GAME_IMAGES[choice]}")
+    except IndexError:
         print("Provide correct input")
         choice = player_choice()
     return choice
@@ -18,7 +15,7 @@ def player_choice() -> int:
 def comp_choice() -> int:
     import random
     choice = random.randint(0, 2)
-    print(f"Computer chose:\n{GAME_DICT[choice]}")
+    print(f"Computer chose:\n{GAME_IMAGES[choice]}")
     return choice
 
 
