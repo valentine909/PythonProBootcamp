@@ -17,7 +17,7 @@ def player_choice() -> int:
 
 def comp_choice() -> int:
     import random
-    choice = random.randrange(0, 3)
+    choice = random.randint(0, 2)
     print(f"Computer chose:\n{GAME_DICT[choice]}")
     return choice
 
