@@ -22,17 +22,19 @@ maze = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 
 
 def print_maze(m):
+    maze_string = ''
     for i in m:
         for j in i:
             if j == 1:
-                print('#', end='', sep='')
+                maze_string += '#'
             elif j == 2:
-                print('*', end='', sep='')
+                maze_string += '*'
             elif j == 3:
-                print('@', end='', sep='')
+                maze_string += '@'
             else:
-                print('.', end='', sep='')
-        print()
+                maze_string += '.'
+        maze_string += '\n'
+    print(maze_string)
 
 
 class Robot:
