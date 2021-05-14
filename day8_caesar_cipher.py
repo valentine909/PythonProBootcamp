@@ -1,4 +1,5 @@
 from day8_art import logo
+ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 
 def take_input():
@@ -8,41 +9,26 @@ def take_input():
     return mode, message.lower(), shift
 
 
-def encode(message, shift):
-    new_message = ''
-    for i in message:
-        if i.isalpha():
-            new_position = (ord(i) + shift) - (ord(i) + shift) // (97 + 25) * 25
-            new_message += chr(new_position)
-        else:
-            new_message += i
-    return new_message
-
-
-def decode(message, shift):
-    new_message = ''
-    for i in message:
-        if i.isalpha():
-            if ord(i) - shift < 97:
-                new_position = (ord(i) - shift) + 25
-            else:
-                new_position = (ord(i) - shift)
-            new_message += chr(new_position)
-        else:
-            new_message += i
-    return new_message
-
-
 def cryptographer():
     mode, message, shift = take_input()
-    if mode == 'encode':
-        print(encode(message, shift))
-    elif mode == 'decode':
-        print(decode(message, shift))
-    else:
-        print("Clarify your input")
+    new_message = ''
+    shift %= 26
+    direction = 1 if mode == 'encode' else -1
+    for i in message:
+        if i.isalpha():
+            new_position = (ALPHABET.index(i) + shift * direction) % 26
+            new_message += ALPHABET[new_position]
+        else:
+            new_message += i
+    return new_message
 
 
 if __name__ == '__main__':
     print(logo)
-    cryptographer()
+    loop_flag = True
+    while loop_flag:
+        print(cryptographer())
+        again = input("Type 'yes' if you want to go again. Otherwise type 'no'.\n")
+        if again == 'no':
+            loop_flag = False
+            print("Goodbye!")
