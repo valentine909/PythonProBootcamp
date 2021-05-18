@@ -14,7 +14,7 @@ class Player:
     def __init__(self):
         self.hand = []
 
-    def draw(self):
+    def deal_card(self):
         import random
         self.hand.append(random.choice(CARDS))
 
@@ -37,19 +37,11 @@ class Computer(Player):
 class Blackjack:
     def __init__(self, AI=Computer(), Human=Player()):
         self.AI = AI
+        self.AI.__init__()
         self.Human = Human
+        self.Human.__init__()
 
-    def start(self):
-        print(logo)
-        self.Human.hand = []
-        self.AI.hand = []
-        for i in range(2):
-            self.Human.draw()
-            self.AI.draw()
-        self.current_table()
-        self.game()
-
-    def calculation_of_results(self, final=False):
+    def check_lose_or_win(self, final=False):
         if final:
             if self.AI.score() > 21 or self.Human.score() > self.AI.score():
                 return self.win()
@@ -64,6 +56,16 @@ class Blackjack:
         elif self.Human.score() == 21:
             return self.win()
         return False
+
+    def start(self):
+        print(logo)
+        for _ in range(2):
+            self.Human.deal_card()
+            self.AI.deal_card()
+        self.current_table()
+        if self.check_lose_or_win():
+            return
+        self.game()
 
     def win(self):
         self.final_table()
@@ -91,21 +93,19 @@ class Blackjack:
     def game(self):
         proceed = input("Type 'y' to get another card, type 'n' to pass: ")
         while proceed == 'y':
-            self.Human.draw()
-            if self.calculation_of_results():
+            self.Human.deal_card()
+            if self.check_lose_or_win():
                 return
             self.current_table()
             proceed = input("Type 'y' to get another card, type 'n' to pass: ")
-        if self.calculation_of_results():
-            return
-        while self.AI.score() < 17 and not self.AI.score() > 21:
-            self.AI.draw()
-        self.calculation_of_results(final=True)
+        while self.AI.score() < 17:
+            self.AI.deal_card()
+        self.check_lose_or_win(final=True)
 
 
 if __name__ == '__main__':
-    is_playing = input("Do you want to play a game of Blackjack? Type 'y' or 'n': ")
-    while is_playing == 'y':
+    iam_playing = input("Do you want to play a game of Blackjack? Type 'y' or 'n': ")
+    while iam_playing == 'y':
         game_session = Blackjack()
         game_session.start()
-        is_playing = input("Do you want to play more? Type 'y' or 'n': ")
+        iam_playing = input("Do you want to play more? Type 'y' or 'n': ")
