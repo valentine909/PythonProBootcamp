@@ -59,6 +59,8 @@ class Blackjack:
                 return self.draw()
         if self.Human.score() > 21:
             return self.lose()
+        elif self.Human.score() == 21 and self.AI.score() == 21:
+            return self.draw()
         elif self.Human.score() == 21:
             return self.win()
         return False
