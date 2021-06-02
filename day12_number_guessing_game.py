@@ -4,7 +4,7 @@ from day12_art import logo
 print(logo)
 print("Welcome to the Number Guessing Game!")
 print("I'm thinking of a number between 1 and 100.")
-number = random.randrange(1, 100)
+number = random.randrange(1, 101)
 difficulty = input("Choose a difficulty. Type 'easy' or 'hard': ")
 attempts = 0
 if difficulty == 'easy':
