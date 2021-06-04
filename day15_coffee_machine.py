@@ -23,18 +23,18 @@ def print_report():
 def process_coins(name):
     coins = {'quarters': 0.25, 'dimes': 0.10, 'nickles': 0.05, 'pennies': 0.01}
     cost = MACHINE[name]['money']
-    print(f"{name.capitalize()} costs ${-cost}.")
+    print(f"{name.capitalize()} costs ${-cost:.2f}.")
     print("Please insert coins.")
     payment = 0
     for i in coins:
         n = int(input(f"How many {i}: "))
         payment += coins[i] * n
     if payment < -cost:
-        print(f"{name.capitalize()} costs ${-cost}. You've inserted ${payment}.")
+        print(f"{name.capitalize()} costs ${-cost:.2f}. You've inserted ${payment:.2f}.")
         print(f"Sorry, that's not enough money. Money refunded.")
         return False
     elif payment > -cost:
-        print(f"Here is ${payment + cost} change.")
+        print(f"Here is ${(payment + cost):.2f} change.")
         return True
     else:
         return True
