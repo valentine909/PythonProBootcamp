@@ -1,4 +1,8 @@
 from abc import ABCMeta, abstractmethod
+"""
+Vending Machine project based on Command design pattern.
+Receivers: CoffeeMachine, MoneyMachine, Printer, Menu
+"""
 
 
 class CoffeeMachine:
@@ -72,11 +76,8 @@ class MoneyMachine:
         self.money += payment
         return payment
 
-    def give_change(self, cost, payment):
-        self.money -= (payment - cost)
-
-    def refund(self, refund):
-        self.money -= refund
+    def return_money(self, money):
+        self.money -= money
 
     def get_balance(self):
         return self.money
@@ -89,10 +90,13 @@ class Command(metaclass=ABCMeta):
 
 
 class MakeCoffee(Command):
-    def __init__(self, drink: Drink, coffee_machine: CoffeeMachine, p: Printer):
-        self.drink = drink
+    def __init__(self, coffee_machine: CoffeeMachine, printer: Printer):
+        self.drink = None
         self.coffee_machine = coffee_machine
-        self.printer = p
+        self.printer = printer
+
+    def set_drink(self, drink: Drink):
+        self.drink = drink
 
     def execute(self):
         w, m, c = self.drink.get_drink_resources()
@@ -101,8 +105,8 @@ class MakeCoffee(Command):
 
 
 class PrintReport(Command):
-    def __init__(self, p: Printer, coffee_machine: CoffeeMachine):
-        self.printer = p
+    def __init__(self, printer: Printer, coffee_machine: CoffeeMachine):
+        self.printer = printer
         self.coffee_machine = coffee_machine
 
     def execute(self):
@@ -111,8 +115,8 @@ class PrintReport(Command):
 
 
 class CheckBalance(Command):
-    def __init__(self, p: Printer, money_machine: MoneyMachine):
-        self.printer = p
+    def __init__(self, printer: Printer, money_machine: MoneyMachine):
+        self.printer = printer
         self.money_machine = money_machine
 
     def execute(self):
@@ -129,10 +133,13 @@ class TurnOff(Command):
 
 
 class CheckResources(Command):
-    def __init__(self, drink: Drink, coffee_machine: CoffeeMachine, p: Printer):
-        self.drink = drink
+    def __init__(self, coffee_machine: CoffeeMachine, printer: Printer):
+        self.drink = None
         self.coffee_machine = coffee_machine
-        self.printer = p
+        self.printer = printer
+
+    def set_drink(self, drink: Drink):
+        self.drink = drink
 
     def execute(self):
         w1, m1, c1 = self.coffee_machine.report_resources()
@@ -149,25 +156,82 @@ class CheckResources(Command):
         return True
 
 
-class TakePayment(Command):
-    def __init__(self, money_machine: MoneyMachine):
+class Payment(Command):
+    def __init__(self, money_machine: MoneyMachine, printer: Printer):
         self.money_machine = money_machine
+        self.drink = None
+        self.printer = printer
+
+    def set_drink(self, drink: Drink):
+        self.drink = drink
 
     def execute(self):
-        return self.money_machine.take_payment()
+        cost = self.drink.get_drink_cost()
+        self.printer.print(f"{self.drink.name.capitalize()} costs ${cost:.2f}.")
+        self.printer.print("Please insert coins.")
+        income = self.money_machine.take_payment()
+        if cost > income:
+            print(f"{self.drink.name.capitalize()} costs ${cost:.2f}. You've inserted ${income:.2f}.")
+            print(f"Sorry, that's not enough money. Money refunded.")
+            return False
+        elif income > cost:
+            self.printer.print(f"Here is ${(income - cost):.2f} change.")
+            self.money_machine.return_money(income - cost)
+        return True
 
 
 class CoffeeMachineInterface:
-    def __init__(self, command):
-        self.order = command
+    def __init__(self, coffee_machine: CoffeeMachine, money_machine: MoneyMachine, menu: Menu, printer: Printer):
+        self.order = None
+        self.drink = None
+        self.coffee_machine = coffee_machine
+        self.money_machine = money_machine
+        self.menu = menu
+        self.printer = printer
+        self.turn_off = TurnOff(self.coffee_machine)
+        self.pay = Payment(self.money_machine, self.printer)
+        self.check_resources = CheckResources(self.coffee_machine, self.printer)
+        self.print_report = PrintReport(self.printer, self.coffee_machine)
+        self.check_balance = CheckBalance(self.printer, self.money_machine)
+        self.make_coffee = MakeCoffee(self.coffee_machine, self.printer)
+        self.COMMANDS = {
+            'latte': self.order_coffee,
+            'espresso': self.order_coffee,
+            'cappuccino': self.order_coffee,
+            'off': self.turn_off.execute,
+            'report': self.report,
+        }
+
+    def set_order(self):
+        order = input(f"What would you like? ({'/'.join(self.menu.get_all_drinks_name())}): ")
+        self.order = order.lower()
+        try:
+            self.drink = self.menu.get_drink(self.order)
+        except Exception as e:
+            self.printer.print(e)
+        try:
+            self.COMMANDS[self.order]()
+        except Exception as e:
+            self.printer.print(e)
+
+    def order_coffee(self):
+        self.check_resources.set_drink(self.drink)
+        if self.check_resources.execute():
+            self.pay.set_drink(self.drink)
+            if self.pay.execute():
+                self.make_coffee.set_drink(self.drink)
+                self.make_coffee.execute()
+
+    def report(self):
+        self.print_report.execute()
+        self.check_balance.execute()
 
 
 if __name__ == '__main__':
     cm = CoffeeMachine(500, 500, 500)
     mm = MoneyMachine()
-    printer = Printer()
-    menu = Menu()
-    cmi = CoffeeMachineInterface
+    p = Printer()
+    me = Menu()
+    cmi = CoffeeMachineInterface(cm, mm, me, p)
     while True:
-        order = input("What would you like? (espresso/latte/cappuccino): ")
-        cmi(order)
+        cmi.set_order()
