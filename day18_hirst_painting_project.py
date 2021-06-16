@@ -25,6 +25,7 @@ if __name__ == '__main__':
     screen.screensize(canvwidth=WIDTH, canvheight=HEIGHT)
     t = Turtle()
     t.speed('fastest')
+    t.hideturtle()
     colormode(255)
     draw_hirst(t)
     screen.exitonclick()
