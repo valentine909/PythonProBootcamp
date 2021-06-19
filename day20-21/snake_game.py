@@ -33,6 +33,12 @@ def enable_keys():
     screen.onkey(key='d', fun=snake.to_the_right)
 
 
+def is_wall_collision():
+    x = WIDTH // 2 - 20
+    y = HEIGHT // 2 - 20
+    return snake.head.xcor() > x or snake.head.xcor() < -x or snake.head.ycor() > y or snake.head.ycor() < -y
+
+
 def main():
     global snake
     init_screen()
@@ -50,6 +56,9 @@ def main():
             food.move()
             snake.add_segment()
             score.refresh_score()
+        if is_wall_collision():
+            game_is_on = False
+            score.game_over()
         sleep(SNAKE_MOVE_DELAY)
 
 
