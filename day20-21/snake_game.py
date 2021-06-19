@@ -33,7 +33,7 @@ def enable_keys():
 
 
 def main():
-    global snake, food
+    global snake
     init_screen()
     screen.update()
     snake = Snake()
@@ -44,6 +44,9 @@ def main():
     while game_is_on:
         snake.move_forward()
         screen.update()
+        if snake.head.distance(food) <= 15:
+            food.move()
+            snake.add_segment()
         sleep(SNAKE_MOVE_DELAY)
 
 
