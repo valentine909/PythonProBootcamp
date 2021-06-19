@@ -11,25 +11,42 @@ TO DO steps
 from turtle import Screen
 from time import sleep
 from snake import Snake
-WIDTH = 600
-HEIGHT = 600
-SNAKE_MOVE_DELAY = 0.3
+from food import Food
+from settings import SETTINGS
+WIDTH = SETTINGS['width']
+HEIGHT = SETTINGS['height']
+SNAKE_MOVE_DELAY = SETTINGS['move_delay']
 
 
-if __name__ == '__main__':
+def init_screen():
+    global screen
     screen = Screen()
     screen.setup(width=WIDTH, height=HEIGHT)
     screen.bgcolor("black")
     screen.title("My Snake Game")
     screen.tracer(0)
-    snake = Snake()
-    screen.update()
-    screen.listen()
+
+
+def enable_keys():
     screen.onkey(key='a', fun=snake.to_the_left)
     screen.onkey(key='d', fun=snake.to_the_right)
+
+
+def main():
+    global snake, food
+    init_screen()
+    screen.update()
+    snake = Snake()
+    food = Food()
+    enable_keys()
+    screen.listen()
     game_is_on = True
     while game_is_on:
         snake.move_forward()
         screen.update()
         sleep(SNAKE_MOVE_DELAY)
-    screen.exitonclick()
+
+
+if __name__ == '__main__':
+    main()
+    screen.mainloop()
