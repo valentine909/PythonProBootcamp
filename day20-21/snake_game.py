@@ -14,9 +14,12 @@ from snake import Snake
 from food import Food
 from scoreboard import Scoreboard
 from settings import SETTINGS
+
 WIDTH = SETTINGS['width']
 HEIGHT = SETTINGS['height']
 SNAKE_MOVE_DELAY = SETTINGS['move_delay']
+
+global screen, snake, food
 
 
 def init_screen():
