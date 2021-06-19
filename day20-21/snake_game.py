@@ -12,6 +12,7 @@ from turtle import Screen
 from time import sleep
 from snake import Snake
 from food import Food
+from scoreboard import Scoreboard
 from settings import SETTINGS
 WIDTH = SETTINGS['width']
 HEIGHT = SETTINGS['height']
@@ -38,6 +39,7 @@ def main():
     screen.update()
     snake = Snake()
     food = Food()
+    score = Scoreboard()
     enable_keys()
     screen.listen()
     game_is_on = True
@@ -47,6 +49,7 @@ def main():
         if snake.head.distance(food) <= 15:
             food.move()
             snake.add_segment()
+            score.refresh_score()
         sleep(SNAKE_MOVE_DELAY)
 
 
