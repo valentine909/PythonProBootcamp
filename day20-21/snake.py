@@ -3,10 +3,9 @@ from turtle import Turtle
 
 class Segment(Turtle):
     def __init__(self):
-        super().__init__(shape='square', visible=False)
+        super().__init__(shape='square')
         self.color('white')
         self.pu()
-        self.showturtle()
 
     def move_to_position(self, other):
         x = other.get_position()
