@@ -35,6 +35,9 @@ class Snake:
         self.head = None
         self.create_snake()
 
+    def __getitem__(self, val):
+        return self.snake[val]
+
     def create_snake(self):
         for i in range(3):
             seg = Segment()
