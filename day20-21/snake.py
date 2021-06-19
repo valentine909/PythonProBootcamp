@@ -3,32 +3,31 @@ from turtle import Turtle
 
 class Segment(Turtle):
     def __init__(self):
-        super().__init__()
-        self.segment = Turtle(shape='square', visible=False)
-        self.segment.color('white')
-        self.segment.pu()
-        self.segment.showturtle()
+        super().__init__(shape='square', visible=False)
+        self.color('white')
+        self.pu()
+        self.showturtle()
 
     def move_to_position(self, other):
         x = other.get_position()
-        self.segment.goto(x)
+        self.goto(x)
 
     def move(self):
-        self.segment.forward(20)
+        self.forward(20)
 
     def set_position(self, x, y):
-        self.segment.goto(x, y)
+        self.goto(x, y)
 
     def get_position(self):
-        return self.segment.position()
+        return self.position()
 
     def turn_left(self):
-        curr = self.segment.heading()
-        self.segment.setheading(curr + 90)
+        curr = self.heading()
+        self.setheading(curr + 90)
 
     def turn_right(self):
-        curr = self.segment.heading()
-        self.segment.setheading(curr - 90)
+        curr = self.heading()
+        self.setheading(curr - 90)
 
 
 class Snake:
