@@ -59,3 +59,5 @@ class Snake:
     def to_the_right(self):
         self.head.turn_right()
 
+    def add_segment(self):
+        self.snake.append(Segment())
