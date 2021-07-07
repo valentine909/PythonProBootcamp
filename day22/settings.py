@@ -5,6 +5,6 @@ SETTINGS = {
     'pl1color': 'yellow',
     'pl2color': 'green',
     'title': "My Pong Game",
-    'delay': 0.05,
+    'delay': 0.1,
 
 }

@@ -9,12 +9,12 @@ TO DO LIST
 6) Collision with padding
 7) Second player
 """
+from random import randint
 from turtle import Screen, Turtle
 from time import sleep
 from settings import SETTINGS
 from ball import Ball
-from score import Scoreboard
-from paddle import Paddle
+from player import Player
 
 WIDTH = SETTINGS['width']
 HEIGHT = SETTINGS['height']
@@ -22,8 +22,7 @@ BACKGROUND_COLOR = SETTINGS['bgcolor']
 TITLE = SETTINGS['title']
 GAME_SPEED = SETTINGS['delay']
 
-
-global screen, ball, paddle
+global screen, ball, player_one, player_two
 
 
 def draw_central_line():
@@ -51,8 +50,10 @@ def init_screen():
 
 
 def enable_keys():
-    screen.onkeypress(key='w', fun=paddle.move_up)
-    screen.onkeypress(key='s', fun=paddle.move_down)
+    screen.onkeypress(key='w', fun=player_one.paddle.move_up)
+    screen.onkeypress(key='s', fun=player_one.paddle.move_down)
+    screen.onkeypress(key='Up', fun=player_two.paddle.move_up)
+    screen.onkeypress(key='Down', fun=player_two.paddle.move_down)
 
 
 def is_wall_collision():
@@ -60,21 +61,31 @@ def is_wall_collision():
     return ball.ycor() > y or ball.ycor() < -y
 
 
-def is_ball_escaped():
+def is_ball_escaped_player_one():
     x = WIDTH // 2 - 10
-    return ball.xcor() > x or ball.xcor() < -x
+    return ball.xcor() < -x
+
+
+def is_ball_escaped_player_two():
+    x = WIDTH // 2 - 10
+    return ball.xcor() > x
 
 
 def is_paddle_collision():
-    return ball.distance(paddle) < 40
+    if player_one.paddle.check_intersection(ball.xcor(), ball.ycor()) or \
+            player_two.paddle.check_intersection(ball.xcor(), ball.ycor()):
+        ball.move_speed *= 0.9
+        return True
+    else:
+        return False
 
 
 def main():
-    global ball, paddle
+    global ball, player_one, player_two, game_speed
     init_screen()
     ball = Ball()
-    score = Scoreboard()
-    paddle = Paddle()
+    player_one = Player(name='first')
+    player_two = Player(name='second')
     screen.update()
     enable_keys()
     screen.listen()
@@ -83,13 +94,16 @@ def main():
         ball.move()
         screen.update()
         if is_wall_collision():
-            ball.setheading((ball.heading() + 180) % 360)
-        if is_ball_escaped():
-            score.refresh_score()
+            ball.setheading(360 - ball.heading())
+        if is_ball_escaped_player_one():
+            player_two.score.refresh_score()
+            ball.start_over(True)
+        if is_ball_escaped_player_two():
+            player_one.score.refresh_score()
             ball.start_over()
         if is_paddle_collision():
-            ball.setheading((ball.heading() + 180) % 360)
-        sleep(GAME_SPEED)
+            ball.setheading((180 - ball.heading() + randint(-45, 45)) % 360)
+        sleep(GAME_SPEED * ball.move_speed)
 
 
 if __name__ == '__main__':

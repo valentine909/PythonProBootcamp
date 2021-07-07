@@ -7,12 +7,16 @@ FONT = ("Arial", 32, "bold")
 
 
 class Scoreboard(Turtle):
-    def __init__(self):
+    def __init__(self, player='first'):
         super().__init__(visible=False)
         self.color('white')
         self.score = -1
         self.pu()
-        self.goto(-30, HEIGHT // 2 - 50)
+        self.player = player
+        if self.player == 'second':
+            self.goto(30, HEIGHT // 2 - 50)
+        elif self.player == 'first':
+            self.goto(-30, HEIGHT // 2 - 50)
         self.refresh_score()
 
     def refresh_score(self):
