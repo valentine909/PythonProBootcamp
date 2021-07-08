@@ -64,3 +64,9 @@ class Snake:
 
     def add_segment(self):
         self.snake.append(Segment())
+
+    def reset(self):
+        for seg in self.snake:
+            seg.goto(5000, 5000)
+        self.snake = []
+        self.create_snake()
