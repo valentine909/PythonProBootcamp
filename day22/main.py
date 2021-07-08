@@ -81,7 +81,7 @@ def is_paddle_collision():
 
 
 def main():
-    global ball, player_one, player_two, game_speed
+    global ball, player_one, player_two
     init_screen()
     ball = Ball()
     player_one = Player(name='first')
