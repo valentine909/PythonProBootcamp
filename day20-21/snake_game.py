@@ -71,8 +71,9 @@ def main():
             snake.add_segment()
             score.refresh_score()
         if is_wall_collision() or is_self_collision():
-            game_is_on = False
-            score.game_over()
+            # score.game_over()
+            snake.reset()
+            score.reset()
         sleep(SNAKE_MOVE_DELAY)
 
 
