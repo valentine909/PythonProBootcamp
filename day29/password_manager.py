@@ -1,8 +1,20 @@
 from tkinter import *
 from tkinter import messagebox
+import json
 from password_generator import generate_password
 import pyperclip
-DATABASE = 'db_passwords.txt'
+DATABASE = 'db_passwords.json'
+# ---------------------------- DATABASE INIT ------------------------------- #
+
+
+def init_database():
+    try:
+        file = open(DATABASE)
+    except FileNotFoundError:
+        file = open(DATABASE, 'w')
+        json.dump({'default': {'email': 'some@email.com', 'password': '1111'}}, file, indent=4)
+    finally:
+        file.close()
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -15,13 +27,16 @@ def random_password():
 
 
 def save_password():
-    record = [field_website.get(), field_email.get(), field_password.get()]
-    if all(record):
-        with open(DATABASE, 'a') as file:
-            file.write(';'.join(record) + '\n')
+    web, em, pas = [field_website.get(), field_email.get(), field_password.get()]
+    if all((web, em, pas)):
+        with open(DATABASE, 'r') as db:
+            file = json.load(db)
+            file[web] = {'email': em, 'password': pas}
+        with open(DATABASE, 'w') as db:
+            json.dump(file, db, indent=4)
         field_password.delete(0, END)
         field_website.delete(0, END)
-        messagebox.showinfo('', 'Password was saved')
+        messagebox.showinfo(web, 'Password was saved')
     else:
         messagebox.showerror('Data missing', 'Provide all required data')
 # ---------------------------- SEARCH PASSWORD ------------------------------- #
@@ -29,18 +44,17 @@ def save_password():
 
 def search_password():
     website = field_website.get()
-    try:
-        with open(DATABASE) as db:
-            for record in db.readlines():
-                web, em, pas = record.split(';')
-                if web == website:
-                    messagebox.showinfo(website, f'Email: {em}\nPassword: {pas}')
-                    return
+    with open(DATABASE) as db:
+        file = json.load(db)
+        record = file.get(website, 0)
+        if record:
+            messagebox.showinfo(website, f'Email: {record["email"]}\nPassword: {record["password"]}')
+        else:
             messagebox.showinfo(website, f'No saved password found for {website}')
-    except FileNotFoundError:
-        messagebox.showinfo(website, f'No saved password found for {website}')
 # ---------------------------- UI SETUP ------------------------------- #
 
+
+init_database()
 
 window = Tk()
 window.title('Password Manager')
