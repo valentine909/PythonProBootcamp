@@ -1,5 +1,7 @@
 from tkinter import *
 import time
+import os
+import sys
 from collections import namedtuple
 from pushbullet_message import pushbullet_message
 PINK = "#e2979c"
@@ -68,6 +70,8 @@ def raise_above_all():
     window.attributes('-topmost', 0)
 # ---------------------------- UI SETUP ------------------------------- #
 
+
+os.chdir(sys.path[0])
 
 window = Tk()
 window.title('Pomodoro')
