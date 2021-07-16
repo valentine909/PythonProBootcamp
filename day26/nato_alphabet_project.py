@@ -7,7 +7,11 @@ def process_cvs(name: str) -> dict:
 
 
 def take_input_word():
-    return input("Enter a word: ")
+    name = input("Enter a word: ")
+    while not name.isalpha():
+        print('Sorry, only letters in the alphabet please')
+        name = input("Enter a word: ")
+    return name
 
 
 def encode_word(word):
