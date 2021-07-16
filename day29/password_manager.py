@@ -51,7 +51,7 @@ def search_password():
             messagebox.showinfo(website, f'Email: {record["email"]}\nPassword: {record["password"]}')
         else:
             messagebox.showinfo(website, f'No saved password found for {website}')
-# ---------------------------- UI SETUP ------------------------------- #
+# ---------------------------- DB & UI SETUP ------------------------------- #
 
 
 init_database()
