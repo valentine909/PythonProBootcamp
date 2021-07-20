@@ -15,6 +15,7 @@ class Cards_Game:
         self.init_df()
         self.row = None
         self.words_to_learn = False
+        self.flip_timer = None
 
         self.card_back = PhotoImage(file='images/card_back.png')
         self.card_front = PhotoImage(file='images/card_front.png')
@@ -62,7 +63,7 @@ class Cards_Game:
         self.canvas.itemconfig(self.card, image=self.card_front)
         self.label_word.config(text=self.row.English.item(), fg='black', bg='white')
         self.label_lang.config(text='English', fg='black', bg='white')
-        self.root.after(3000, self.flip_card)
+        self.flip_timer = self.root.after(3000, self.flip_card)
 
     def flip_card(self):
         self.canvas.itemconfig(self.card, image=self.card_back)
@@ -70,10 +71,12 @@ class Cards_Game:
         self.label_lang.config(text='Russian', fg='white', bg=CARD_BACK)
 
     def right(self):
+        self.root.after_cancel(self.flip_timer)
         self.df = self.df.drop(self.row.index)
         self.card_init()
 
     def wrong(self):
+        self.root.after_cancel(self.flip_timer)
         if self.words_to_learn:
             self.row.to_csv('./data/words_to_learn.csv', mode='a', index=False, encoding='utf-8', header=False)
         else:
