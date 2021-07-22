@@ -30,8 +30,7 @@ def send_mail(email, msg):
 def check_birthday():
     birth_df = pds.read_csv('birthdays.csv')
     now = datetime.now()
-    for index, _ in birth_df[(birth_df.day == now.day) & (birth_df.month == now.month)].iterrows():
-        man = birth_df.loc[index]
+    for index, man in birth_df[(birth_df.day == now.day) & (birth_df.month == now.month)].iterrows():
         letter_path = pick_random_letter()
         letter = replace_name(man.names, letter_path)
         send_mail(man.email, letter)
