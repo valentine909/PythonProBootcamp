@@ -1,7 +1,6 @@
 from data_manager import DataManager
 from flight_search import FlightSearch
 from notification_manager import NotificationManager
-UPDATE_IATA = False
 
 
 def update_iata_codes():
@@ -20,10 +19,11 @@ if __name__ == '__main__':
     flight_search = FlightSearch()
     email_sender = NotificationManager()
 
-    if UPDATE_IATA:
+    if data_manager.get_cities_with_empty_iata_codes():
         update_iata_codes()
 
     flight_deals = search_flight_deals()
     if flight_deals:
         for flight in flight_deals:
-            email_sender.send_message(flight)
+            for user in data_manager.get_all_emails():
+                email_sender.send_message(flight, user)

@@ -1,24 +1,23 @@
 from smtplib import SMTP_SSL
 from email.message import EmailMessage
-from private import gmail, gmail_2
+from private import gmail
 from flight_data import FlightData
 
 
 class NotificationManager:
     def __init__(self, ):
-        self.body = None
-        self.subject = 'Low-cost alert!'
-        self.message = EmailMessage()
+        self.body = ''
 
-    def send_message(self, flight_data: FlightData):
+    def send_message(self, flight_data: FlightData, email):
+        message = EmailMessage()
         self._compose_body(flight_data)
-        self.message.set_content(self.body)
-        self.message['Subject'] = self.subject
-        self.message['From'] = gmail.email
-        self.message['To'] = gmail_2.email
+        message.set_content(self.body)
+        message['Subject'] = 'Low-cost alert!'
+        message['From'] = gmail.email
+        message['To'] = email
         with SMTP_SSL(gmail.smtp) as connection:
             connection.login(gmail.email, gmail.password)
-            connection.send_message(self.message)
+            connection.send_message(message)
 
     def _compose_body(self, flight_data: FlightData):
         self.body = (f'Only ${flight_data.price} to fly from {flight_data.from_city}-{flight_data.from_airport_code} '
